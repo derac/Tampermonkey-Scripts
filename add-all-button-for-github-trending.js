@@ -44,5 +44,4 @@
 
   const observer = new MutationObserver(on_page_change);
   observer.observe(document.querySelector("head>title"), { childList: true });
-  window.onload = on_page_change;
 })();
