@@ -12,57 +12,37 @@
 (function () {
   "use strict";
 
-  const on_page_change = () => {
-    console.log("ran");
+  const make_click_all_button = (selector, button_text) => {
     let nav_buttons = document.querySelector('nav[class="subnav mb-0"]');
+    const click_all = () => {
+      let clickables = document.querySelectorAll(selector);
+      [...clickables].forEach((button) => {
+        button.click();
+      });
+    };
+    let add_all_button = document.createElement("a");
+    add_all_button.onclick = click_all;
+    add_all_button.textContent = button_text;
+    add_all_button.setAttribute("class", "subnav-item");
+    add_all_button.setAttribute("href", "#");
+    nav_buttons.parentNode.insertBefore(
+      add_all_button,
+      nav_buttons.nextSibling
+    );
+  };
+
+  const on_page_change = () => {
     if (window.location.href.includes("developers")) {
-      const follow_all_devs = () => {
-        let follow_buttons = document.querySelectorAll('input[value="Follow"]');
-        console.log(follow_buttons);
-        [...follow_buttons].forEach((button) => {
-          button.click();
-        });
-      };
-
-      let follow_all_button = document.createElement("a");
-      follow_all_button.onclick = follow_all_devs;
-      follow_all_button.textContent = "Follow all";
-      follow_all_button.setAttribute("class", "subnav-item");
-      follow_all_button.setAttribute("href", "#");
-      nav_buttons.parentNode.insertBefore(
-        follow_all_button,
-        nav_buttons.nextSibling
-      );
+      make_click_all_button('input[value="Follow"]', "Follow all");
     } else {
-      const star_all_repos = () => {
-        let repo_star_buttons = document.querySelectorAll(
-          'div[class~="starring-container"]:not(.on) > form[class~="unstarred"] > button'
-        );
-        console.log(repo_star_buttons);
-        [...repo_star_buttons].forEach((button) => {
-          button.click();
-        });
-      };
-
-      let star_all_button = document.createElement("a");
-      star_all_button.onclick = star_all_repos;
-      star_all_button.textContent = "Star all";
-      star_all_button.setAttribute("class", "subnav-item");
-      star_all_button.setAttribute("href", "#");
-      nav_buttons.parentNode.insertBefore(
-        star_all_button,
-        nav_buttons.nextSibling
+      make_click_all_button(
+        'div[class~="starring-container"]:not(.on) > form[class~="unstarred"] > button',
+        "Star all"
       );
     }
   };
 
   const observer = new MutationObserver(on_page_change);
-  observer.observe(document.querySelector("head>title"), {
-    characterData: false,
-    attributes: false,
-    childList: true,
-    subtree: false,
-  });
+  observer.observe(document.querySelector("head>title"), { childList: true });
   window.onload = on_page_change;
-  console.log(window.location.href);
 })();
